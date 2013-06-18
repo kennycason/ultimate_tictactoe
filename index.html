@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="//w3.org/1999/xhtml" dir="ltr" lang="en_US">
+    <head>
+
+        <title>Ulitmate Tic-Tac-Toe</title>
+        <meta http-equiv="Content-Language" content="en-us" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <meta name="Author" content="Kenny Cason" />
+        <meta name="Copyright" content="Copyright (c) 2013 Ken-Soft" /> 
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+        <script type="text/javascript" src="Canvas.js"></script>        
+		<script type="text/javascript" src="Util.js"></script>  
+		<script type="text/javascript" src="Pencil.js"></script>  
+		<script type="text/javascript" src="TicTacToe.js"></script>  
+		
+        <script type="text/javascript">
+            $(document).ready(function() {
+				var ttt = new TicTacToe();
+				ttt.drawBoard();
+            });
+        </script>
+
+    </head>
+
+    <body>
+		<div id="header">
+			<table>
+				<tr>
+					<td><form><input type="button" onClick="history.go(0)" value="New Game"/></form></td>
+					<td>Turn: <span id="turn">O</span>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td><span id="msg"></span></td>
+				</tr>
+			</table>
+		</div>
+        <canvas id="board" width="666" height="666" style="border:1px solid #c3c3c3;">
+            Your browser does not support the canvas element.
+        </canvas>
+		<div id="footer">
+			<div style="float:left"><a href="http://ken-soft.com/" target="_blank">by: kenny cason 2013</a></div>
+			<div style="float:right"><a href="http://datarank.com/" target="_blank"><img src="datarank_logo.png"/></a></div>
+		</div>
+    </body>
+	
+    <style type="text/css">
+
+        #board {
+            margin-left: auto;
+            margin-right: auto;
+            display:block;
+            background-color:white;
+        }
+
+        #header {
+            margin-left: auto;
+            margin-right: auto;
+            width:666px;
+			height:30px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #footer {
+            margin-left: auto;
+            margin-right: auto;
+            width:666px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+		
+		a {
+			text-decoration:none;
+			color:black;
+		}
+
+    </style>
+	
+</html>
