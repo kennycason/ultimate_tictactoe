@@ -39,7 +39,7 @@
         </canvas>
 		<div id="footer">
 			<div style="float:left"><a href="http://ken-soft.com/" target="_blank">by: kenny cason 2013</a></div>
-			<div style="float:right"><a href="http://datarank.com/" target="_blank"><img src="datarank_logo.png"/></a></div>
+			<div style="float:right"><a href="http://datarank.com/" target="_blank"><img id="logo" src="datarank_logo.png"/></a></div>
 		</div>
     </body>
 	
@@ -71,6 +71,54 @@
 		a {
 			text-decoration:none;
 			color:black;
+		}
+		
+		#logo {
+			height: 50px;
+			width: 226px;
+			-webkit-transform:translate3d(0,0,0);
+		}
+
+		@-webkit-keyframes logo {
+			0% {
+			-webkit-transform: rotate3d(1,1,1,0deg)
+		}
+
+		25% {
+			-webkit-transform: rotate3d(1,1,1,3deg)
+		}
+
+		75% {
+			-webkit-transform: rotate3d(1,1,1,-3deg)
+		}
+
+		100% {
+			-webkit-transform: rotate3d(1,1,1,0deg)
+		}
+		}
+
+		@-moz-keyframes logo {
+			0% {
+			-moz-transform: rotate(0deg)
+		}
+
+		25% {
+			-moz-transform: rotate(3deg)
+		}
+
+		75% {
+			-moz-transform: rotate(-3deg)
+		}
+
+		100% {
+			-moz-transform: rotate(0deg)
+		}
+		}
+
+		#logo:hover {
+			-webkit-animation: logo .2s ease-in-out alternate;
+			-moz-animation: logo .2s ease-in-out alternate;
+			-ms-animation: logo .2s ease-in-out alternate;
 		}
 
     </style>
