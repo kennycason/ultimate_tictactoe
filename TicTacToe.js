@@ -162,6 +162,15 @@ function TicTacToe() {
 		this.nextBoard = [lx, ly];
 	}
 	
+	this.highlightBoard = function() {
+		if(this.nextBoard == null) {
+			$("#board").css("background-position", "-1000px -1000px");
+		} else {
+			var pos = (this.nextBoard[0]*222) + "px " + (this.nextBoard[1]*222) + "px";
+			$("#board").css("background-position", pos);
+		}
+	}
+	
 	this.handleWins = function(x, y, turn) {
 		var w = $("#board").width() / 3;
 		var h = $("#board").height() / 3;
@@ -175,7 +184,11 @@ function TicTacToe() {
 		
 		// local wins
 		// horizontal
-		this.paper.setColor(new Color(0,0,128));
+		if(turn == 2) {
+			this.paper.setColor(new Color(0,128,0));
+		} else if(turn == 1) {
+			this.paper.setColor(new Color(128,0,0));
+		}
 		this.paper.pencil = this.fatPencil;
 		if(board[0][0] == turn && board[1][0] == turn && board[2][0] == turn) {
 			this.paper.line4f(dX+8, dY + h/3/2-4, dX + w-8, dY + h/3/2-4);
@@ -218,7 +231,6 @@ function TicTacToe() {
 		
 		// global wins
 		// horizontal
-		this.paper.setColor(new Color(0,0,0));
 		this.paper.pencil = this.superFatPencil;
 		if((this.wins[0][0] == turn && this.wins[1][0] == turn && this.wins[2][0] == turn)
 		  || (this.wins[0][1] == turn && this.wins[1][1] == turn && this.wins[2][1] == turn) 
@@ -264,11 +276,6 @@ function TicTacToe() {
 			var x = e.clientX - offset.left;
 			var y = e.clientY - offset.top;
 
-			// account for filled squares
-			if(board.nextBoard != null && board.isSubBoardFull(board.getCurrentSubBoard())) {
-				board.nextBoard = null;
-			}
-
 			var moved = board.move(x, y);
 			if(moved) {
 				if(!board.gameOver) {
@@ -276,6 +283,12 @@ function TicTacToe() {
 				}
 				board.switchTurns();
 			}
+			
+			// account for filled squares
+			if(board.nextBoard != null && board.isSubBoardFull(board.getCurrentSubBoard())) {
+				board.nextBoard = null;
+			}
+			board.highlightBoard();
 		}
 	});
 	
