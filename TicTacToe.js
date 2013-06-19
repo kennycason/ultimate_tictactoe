@@ -47,6 +47,8 @@ function TicTacToe() {
 		this.paper.line4f(w-4, -2, w-4, h-4);
 		this.paper.line4f(-2, h-4, w-4, h-4);
 		this.paper.line4f(-2, -2, -2, h-4);
+		
+		this.paper.pencil = this.thinPencil;
 	}
 	
 	this.drawSubBoard = function(x, y) {
@@ -73,11 +75,11 @@ function TicTacToe() {
 	}
 	
 	this.switchTurns = function() {
-		if(this.turn == 1) {
-			this.turn = 2;
-			$("#turn").html("X");
-		} else {
+		if(this.turn == 2) {
 			this.turn = 1;
+			$("#turn").html("X");
+		} else if(this.turn == 1) {
+			this.turn = 2;
 			$("#turn").html("O");
 		}
 	}
@@ -151,9 +153,9 @@ function TicTacToe() {
 		
 		var dX = this.nextBoard[0] * w + lx * w / 3;
 		var dY = this.nextBoard[1] * h + ly * h / 3;
-		if(this.turn == 1) {
+		if(this.turn == 2) {
 			this.drawO(dX, dY);
-		} else {
+		} else if(this.turn == 1) {
 			this.drawX(dX, dY);
 		}
 		this.handleWins(this.nextBoard[0], this.nextBoard[1], 1);
@@ -243,11 +245,11 @@ function TicTacToe() {
 		  || (this.wins[2][0] == turn && this.wins[2][1] == turn && this.wins[2][2] == turn) 
 	      || (this.wins[0][0] == turn && this.wins[1][1] == turn && this.wins[2][2] == turn)
 		  || (this.wins[2][0] == turn && this.wins[1][1] == turn && this.wins[0][2] == turn)) {
-			if(turn == 1) {
+			if(turn == 2) {
 				alert("O Wins!");
 				$("#msg").html("O Wins!");
 				this.gameOver = true;
-			} else if(turn == 2) {
+			} else if(turn == 1) {
 				alert("X Wins!");
 				$("#msg").html("X Wins!");
 				this.gameOver = true;
