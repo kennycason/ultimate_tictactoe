@@ -13,6 +13,10 @@ function TicTacToe() {
 	// the next board that the player has to play in, i.e. [0,0] = top left square
 	this.nextBoard = null; //[1,1]; 
 	
+	this.useAI = true;
+	
+	this.ai = new AI(this);
+	
 	this.state = 	
 	[
 		[[[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]]],
@@ -143,10 +147,7 @@ function TicTacToe() {
 		this.paper.line4f(x+w-9, y+9, x+9, y+h-9);
 	}
 	
-	this.go = function(x, y) {
-		var lxy = this.getLocalCoord(x, y);
-		var lx = lxy[0];
-		var ly = lxy[1];
+	this.go = function(lx, ly) {
 		this.state[this.nextBoard[0]][this.nextBoard[1]][lx][ly] = this.turn;
 		var w = $("#board").width() / 3;
 		var h = $("#board").height() / 3;
@@ -162,6 +163,7 @@ function TicTacToe() {
 		this.handleWins(this.nextBoard[0], this.nextBoard[1], 2);
 		this.nextBoard = [lx, ly];
 	}
+	
 	
 	this.highlightBoard = function() {
 		var w = $("#board").width() / 3;
@@ -189,9 +191,9 @@ function TicTacToe() {
 		
 		// local wins
 		// horizontal
-		if(turn == 2) {
+		if(turn == 1) {
 			this.paper.setColor(new Color(0,128,0));
-		} else if(turn == 1) {
+		} else if(turn == 2) {
 			this.paper.setColor(new Color(128,0,0));
 		}
 		this.paper.pencil = this.fatPencil;
@@ -237,14 +239,7 @@ function TicTacToe() {
 		// global wins
 		// horizontal
 		this.paper.pencil = this.superFatPencil;
-		if((this.wins[0][0] == turn && this.wins[1][0] == turn && this.wins[2][0] == turn)
-		  || (this.wins[0][1] == turn && this.wins[1][1] == turn && this.wins[2][1] == turn) 
-	      || (this.wins[0][2] == turn && this.wins[1][2] == turn && this.wins[2][2] == turn)
-		  || (this.wins[0][0] == turn && this.wins[0][1] == turn && this.wins[0][2] == turn)
-	      || (this.wins[1][0] == turn && this.wins[1][1] == turn && this.wins[1][2] == turn)
-		  || (this.wins[2][0] == turn && this.wins[2][1] == turn && this.wins[2][2] == turn) 
-	      || (this.wins[0][0] == turn && this.wins[1][1] == turn && this.wins[2][2] == turn)
-		  || (this.wins[2][0] == turn && this.wins[1][1] == turn && this.wins[0][2] == turn)) {
+		if(this.hasWon(turn)) {
 			if(turn == 2) {
 				alert("O Wins!");
 				$("#msg").html("O Wins!");
@@ -258,11 +253,28 @@ function TicTacToe() {
 		this.paper.pencil = this.thinPencil;
 	}
 	
+	this.hasWon = function(turn) {
+		if((this.wins[0][0] == turn && this.wins[1][0] == turn && this.wins[2][0] == turn)
+		  || (this.wins[0][1] == turn && this.wins[1][1] == turn && this.wins[2][1] == turn) 
+	      || (this.wins[0][2] == turn && this.wins[1][2] == turn && this.wins[2][2] == turn)
+		  || (this.wins[0][0] == turn && this.wins[0][1] == turn && this.wins[0][2] == turn)
+	      || (this.wins[1][0] == turn && this.wins[1][1] == turn && this.wins[1][2] == turn)
+		  || (this.wins[2][0] == turn && this.wins[2][1] == turn && this.wins[2][2] == turn) 
+	      || (this.wins[0][0] == turn && this.wins[1][1] == turn && this.wins[2][2] == turn)
+		  || (this.wins[2][0] == turn && this.wins[1][1] == turn && this.wins[0][2] == turn)) {
+		  return true;
+		}
+		return false;
+	}
+	
 	this.move = function(x, y) {
 		// alert(x + " " + y);
 		if(this.clickedValidBoard(x, y)) {
 			if(this.clickedEmptySpace(x, y)) {
-				this.go(x, y);
+				var lxy = this.getLocalCoord(x, y);
+				var lx = lxy[0];
+				var ly = lxy[1];
+				this.go(lx, ly);
 				return true;
 			} else {
 				$("#msg").html("That space is already been played!");
@@ -271,31 +283,164 @@ function TicTacToe() {
 			$("#msg").html("Must make a move in board (" + (this.nextBoard[0] + 1) + ", " + (this.nextBoard[1] + 1) + ")");
 		}
 		return false;
+	} 
+
+	this.aiGo = function() {
+		var move = this.ai.solve(this.nextBoard);
+		this.nextBoard = [move[0], move[1]];
+		this.go(move[2], move[3]);
+
+		if(!this.gameOver) {
+			$("#msg").html("");
+		}
+		this.switchTurns();		
+		// account for filled squares
+		if(this.nextBoard != null && this.isSubBoardFull(this.getCurrentSubBoard())) {
+			this.nextBoard = null;
+		}
+		this.highlightBoard();
 	}
+
+	this.handleInput = function(x, y) {
+		if(!this.gameOver) {
+			var moved = this.move(x, y);
+			if(moved) {
+				// account for filled squares
+				if(this.nextBoard != null && this.isSubBoardFull(this.getCurrentSubBoard())) {
+					this.nextBoard = null;
+				}
+				this.highlightBoard();
+				if(!this.gameOver) {
+					$("#msg").html("");
+				}
+				this.switchTurns();
+				if(this.useAI && !this.gameOver) {
+					//this.aiGo();
+				}
+			}
+		}
+
+		
+	}
+	
 
 	$("#msg").html("Start by clicking anywhere :)");
 	// handle click events
 	var board = this;
 	$("#board").click(function(e) {
-		if(!board.gameOver) {
-			var offset = $("#board").offset();
-			var x = e.clientX - offset.left;
-			var y = e.clientY - offset.top;
-
-			var moved = board.move(x, y);
-			if(moved) {
-				if(!board.gameOver) {
-					$("#msg").html("");
-				}
-				board.switchTurns();
-			}
-			
-			// account for filled squares
-			if(board.nextBoard != null && board.isSubBoardFull(board.getCurrentSubBoard())) {
-				board.nextBoard = null;
-			}
-			board.highlightBoard();
-		}
+		var offset = $("#board").offset();
+		var x = e.clientX - offset.left;
+		var y = e.clientY - offset.top;
+		board.handleInput(x, y);
 	});
 	
+}
+
+function AI(ttt) {
+	
+	this.ttt = ttt;
+	
+	this.state = [];
+	
+	this.mySeed = 1;
+	
+	this.opSeed = 2
+	
+	this.solve = function() {
+		this.state = this.deepCopy(this.ttt.state);
+		// alert(this.ttt.nextBoard);
+		// alert(this.state);
+		var result = this.minmax(1, this.seed); // 2 depth, computer = player 2
+		// alert(result);
+		return [result[1], result[2], result[3], result[4]] // 0th index = score, 1,2 = nextBoard position
+	}
+	
+	this.minmax = function(depth, player) {
+		var next = this.generateMoves();
+		var bestScore = (player == this.mySeed) ? -100000 : 100000;
+		var currentScore;
+		var best = [-1, -1, -1, -1];
+		
+		if(next.length == 0 || depth == 0) {
+			bestScore = this.evaluate();
+		} else {
+			for(var i = 0; i < next.length; i++) {
+				// try move
+				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = player;
+				if(player == this.mySeed) { // 
+					currentScore = this.minmax(depth - 1, this.oppSeed)[0]
+					if(currentScore > bestScore) {
+						bestScore = currentScore;
+						best = [next[i][0], next[i][1], next[i][2], next[i][3]];
+					}
+				} else { // minmax
+					currentScore = this.minmax(depth - 1, this.mySeed)[0]
+					if(currentScore < bestScore) {
+						bestScore = currentScore;
+						best = [next[i][0], next[i][1], next[i][2], next[i][3]];
+					}
+				}
+				// undo move
+				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = player;
+			}
+			
+		}
+		return [bestScore].concat(best);
+	}
+	
+	this.evaluate = function() {
+		return 10;
+	}
+	
+	this.generateMoves = function() {
+		var next = new Array();
+		if(this.ttt.hasWon(this.mySeed) || this.ttt.hasWon(this.opSeed)) {
+			return [];
+		}
+		var i,j,x,y;
+		if(this.ttt.nextBoard == null) { // free to move anywhere, Ignore for now
+			for(i = 0; i < 3; i++) {
+				for(j = 0; j < 3; j++) {
+					for(x = 0; x < 3; x++) {
+						for(y = 0; y < 3; y++) {
+							if(this.ttt.state[i][j][x][y] == 0) {
+								next.push([i,j,x,y]);
+							}
+						}	
+					}
+				}	
+			}
+		} else {
+			for(x = 0; x < 3; x++) {
+				for(y = 0; y < 3; y++) {
+					// alert(this.ttt.state[this.ttt.nextBoard[0]][this.ttt.nextBoard[1]][x][y]);
+					if(this.ttt.state[this.ttt.nextBoard[0]][this.ttt.nextBoard[1]][x][y] == 0) {
+						next.push([this.ttt.nextBoard[0], this.ttt.nextBoard[1],x,y]);
+					}
+				}	
+			}
+		}
+		return next;
+	}
+	
+	this.deepCopy = function(state) {
+		var nState =
+		[
+			[[[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]]],
+			[[[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]]],
+			[[[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]], [[0,0,0],[0,0,0],[0,0,0]]]
+		]
+		var i,j,x,y;
+		for(i = 0; i < 3; i++) {
+			for(j = 0; j < 3; j++) {
+				for(x = 0; x < 3; x++) {
+					for(y = 0; y < 3; y++) {
+						nState[i][j][x][y] = state[i][j][x][y];
+					}	
+				}
+			}	
+		}
+		return nState;
+	}
+
 }
