@@ -189,9 +189,9 @@ function TicTacToe() {
 		
 		// local wins
 		// horizontal
-		if(turn == 2) {
+		if(turn == 1) {
 			this.paper.setColor(new Color(0,128,0));
-		} else if(turn == 1) {
+		} else if(turn == 2) {
 			this.paper.setColor(new Color(128,0,0));
 		}
 		this.paper.pencil = this.fatPencil;
