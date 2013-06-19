@@ -165,9 +165,11 @@ function TicTacToe() {
 		var w = $("#board").width() / 3;
 		var h = $("#board").height() / 3;
 		if(this.nextBoard == null) {
-			$("#board").css("background-position", "-1000px -1000px");
+			$("#board").css("background-repeat", "repeat");
+			$("#board").css("background-position", "0px 0px");
 		} else {
 			var pos = (this.nextBoard[0]*w) + "px " + (this.nextBoard[1]*h) + "px";
+			$("#board").css("background-repeat", "no-repeat");
 			$("#board").css("background-position", pos);
 		}
 	}
@@ -269,6 +271,7 @@ function TicTacToe() {
 		return false;
 	}
 
+	$("#msg").html("Start by clicking anywhere :)");
 	// handle click events
 	var board = this;
 	$("#board").click(function(e) {
