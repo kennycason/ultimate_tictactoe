@@ -13,7 +13,7 @@ function TicTacToe() {
 	// the next board that the player has to play in, i.e. [0,0] = top left square
 	this.nextBoard = null; //[1,1]; 
 	
-	this.useAI = true;
+	this.useAI = false;
 	
 	this.ai = new AI(this);
 	
@@ -284,6 +284,15 @@ function TicTacToe() {
 		}
 		return false;
 	} 
+	
+	this.toggleAI = function() {
+		this.useAI = !this.useAI;
+		if(this.useAI) {
+			$("#toggle_ai").attr("value", "A.I.");
+		} else {
+			$("#toggle_ai").attr("value", "Human");
+		}
+	}
 
 	this.aiGo = function() {
 		var move = this.ai.solve(this.nextBoard);
@@ -315,7 +324,7 @@ function TicTacToe() {
 				}
 				this.switchTurns();
 				if(this.useAI && !this.gameOver) {
-					// this.aiGo();
+					this.aiGo();
 				}
 			}
 		}
@@ -350,12 +359,13 @@ function AI(ttt) {
 		this.state = this.deepCopy(this.ttt.state);
 		// alert(this.ttt.nextBoard);
 		// alert(this.state);
-		var result = this.minmax(5, this.seed); // 2 depth, computer = player 2
-		alert(result);
+		var result = this.minmax(3, this.seed); // 2 depth, computer = player 2
+		// alert(result);
 		return [result[1], result[2], result[3], result[4]] // 0th index = score, 1,2 = nextBoard position
 	}
 	
 	this.minmax = function(depth, player) {
+		// alert(this.state);
 		var next = this.generateMoves();
 		var bestScore = (player == this.mySeed) ? -100000 : 100000;
 		var currentScore;
@@ -369,7 +379,7 @@ function AI(ttt) {
 				// try move
 				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = player;
 				if(player == this.mySeed) { // 
-					currentScore = this.minmax(depth - 1, this.oppSeed)[0]
+					currentScore = this.minmax(depth - 1, this.opSeed)[0]
 					if(currentScore > bestScore) {
 						bestScore = currentScore;
 						best = [next[i][0], next[i][1], next[i][2], next[i][3]];
@@ -382,7 +392,7 @@ function AI(ttt) {
 					}
 				}
 				// undo move
-				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = player;
+				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = 0;
 			}
 			
 		}
