@@ -102,7 +102,6 @@ function TicTacToe() {
 		var w = $("#board").width() / 3;
 		var h = $("#board").height() / 3;
 		if(this.nextBoard == null) {
-		//	return null;
 			this.nextBoard = [
 				parseInt(x / w),
 				parseInt(y / h)
@@ -274,7 +273,7 @@ function TicTacToe() {
 	var board = this;
 	$("#board").click(function(e) {
 		if(!board.gameOver) {
-			var offset = $(this).offset();
+			var offset = $("#board").offset();
 			var x = e.clientX - offset.left;
 			var y = e.clientY - offset.top;
 
