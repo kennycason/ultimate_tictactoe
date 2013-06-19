@@ -315,7 +315,7 @@ function TicTacToe() {
 				}
 				this.switchTurns();
 				if(this.useAI && !this.gameOver) {
-					//this.aiGo();
+					// this.aiGo();
 				}
 			}
 		}
@@ -350,8 +350,8 @@ function AI(ttt) {
 		this.state = this.deepCopy(this.ttt.state);
 		// alert(this.ttt.nextBoard);
 		// alert(this.state);
-		var result = this.minmax(1, this.seed); // 2 depth, computer = player 2
-		// alert(result);
+		var result = this.minmax(5, this.seed); // 2 depth, computer = player 2
+		alert(result);
 		return [result[1], result[2], result[3], result[4]] // 0th index = score, 1,2 = nextBoard position
 	}
 	
@@ -362,7 +362,8 @@ function AI(ttt) {
 		var best = [-1, -1, -1, -1];
 		
 		if(next.length == 0 || depth == 0) {
-			bestScore = this.evaluate();
+			// gameover or depth reached, evaluate score
+			bestScore = this.evaluate(player);
 		} else {
 			for(var i = 0; i < next.length; i++) {
 				// try move
@@ -388,8 +389,37 @@ function AI(ttt) {
 		return [bestScore].concat(best);
 	}
 	
-	this.evaluate = function() {
-		return 10;
+	this.evaluate = function(player) {
+		var score = 0;
+		
+		for(var x = 0; x < 3; x++) {
+			for(var y = 0; y < 3; y++) {
+				if(this.hasWon(x, y, player)) {
+					score += 10;
+				}
+			}
+		}
+		
+		if(player == this.mySeed) {
+			score = Math.abs(score)
+		} else {
+			score = score * -1;
+		}
+		return score;
+	}
+	
+	this.hasWon = function(x, y, turn) {
+		if((this.state[x][y][0][0] == turn && this.state[x][y][1][0] == turn && this.state[x][y][2][0] == turn)
+		  || (this.state[x][y][0][1] == turn && this.state[x][y][1][1] == turn && this.state[x][y][2][1] == turn) 
+	      || (this.state[x][y][0][2] == turn && this.state[x][y][1][2] == turn && this.state[x][y][2][2] == turn)
+		  || (this.state[x][y][0][0] == turn && this.state[x][y][0][1] == turn && this.state[x][y][0][2] == turn)
+	      || (this.state[x][y][1][0] == turn && this.state[x][y][1][1] == turn && this.state[x][y][1][2] == turn)
+		  || (this.state[x][y][2][0] == turn && this.state[x][y][2][1] == turn && this.state[x][y][2][2] == turn) 
+	      || (this.state[x][y][0][0] == turn && this.state[x][y][1][1] == turn && this.state[x][y][2][2] == turn)
+		  || (this.state[x][y][2][0] == turn && this.state[x][y][1][1] == turn && this.state[x][y][0][2] == turn)) {
+		  return true;
+		}
+		return false;
 	}
 	
 	this.generateMoves = function() {
