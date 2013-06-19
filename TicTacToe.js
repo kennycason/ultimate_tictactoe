@@ -163,10 +163,12 @@ function TicTacToe() {
 	}
 	
 	this.highlightBoard = function() {
+		var w = $("#board").width() / 3;
+		var h = $("#board").height() / 3;
 		if(this.nextBoard == null) {
 			$("#board").css("background-position", "-1000px -1000px");
 		} else {
-			var pos = (this.nextBoard[0]*222) + "px " + (this.nextBoard[1]*222) + "px";
+			var pos = (this.nextBoard[0]*w) + "px " + (this.nextBoard[1]*h) + "px";
 			$("#board").css("background-position", pos);
 		}
 	}
