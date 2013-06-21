@@ -351,23 +351,21 @@ function AI(ttt) {
 	
 	this.state = [];
 	
-	this.mySeed = 1;
+	this.human = 1;
 	
-	this.opSeed = 2
+	this.computer = 2
 	
 	this.solve = function() {
+		$("#data").html("");
 		this.state = this.deepCopy(this.ttt.state);
-		// alert(this.ttt.nextBoard);
-		// alert(this.state);
-		var result = this.minmax(3, this.seed); // 2 depth, computer = player 2
-		// alert(result);
+		var result = this.minmax(1, this.human); // 2 depth, computer = player 2
 		return [result[1], result[2], result[3], result[4]] // 0th index = score, 1,2 = nextBoard position
 	}
 	
 	this.minmax = function(depth, player) {
 		// alert(this.state);
 		var next = this.generateMoves();
-		var bestScore = (player == this.mySeed) ? -100000 : 100000;
+		var bestScore = (player == this.human) ? -100000 : 100000;
 		var currentScore;
 		var best = [-1, -1, -1, -1];
 		
@@ -378,19 +376,20 @@ function AI(ttt) {
 			for(var i = 0; i < next.length; i++) {
 				// try move
 				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = player;
-				if(player == this.mySeed) { // 
-					currentScore = this.minmax(depth - 1, this.opSeed)[0]
+				if(player == this.human) { // 
+					currentScore = this.minmax(depth - 1, this.computer)[0]
 					if(currentScore > bestScore) {
 						bestScore = currentScore;
 						best = [next[i][0], next[i][1], next[i][2], next[i][3]];
 					}
 				} else { // minmax
-					currentScore = this.minmax(depth - 1, this.mySeed)[0]
+					currentScore = this.minmax(depth - 1, this.human)[0]
 					if(currentScore < bestScore) {
 						bestScore = currentScore;
 						best = [next[i][0], next[i][1], next[i][2], next[i][3]];
 					}
 				}
+				$("#data").append(bestScore + ": " + [next[i][0], next[i][1], next[i][2], next[i][3]] + "<br/>");
 				// undo move
 				this.state[next[i][0]][next[i][1]][next[i][2]][next[i][3]] = 0;
 			}
@@ -405,15 +404,14 @@ function AI(ttt) {
 		for(var x = 0; x < 3; x++) {
 			for(var y = 0; y < 3; y++) {
 				if(this.hasWon(x, y, player)) {
-					score += 10;
+					score += 100;
+				} else if(this.hasTwo(x, y, player)) {
+					score += 10
 				}
 			}
 		}
-		
-		if(player == this.mySeed) {
-			score = Math.abs(score)
-		} else {
-			score = score * -1;
+		if(player == this.human) { // does this help me? if so it's bad'
+			return -score;
 		}
 		return score;
 	}
@@ -432,33 +430,68 @@ function AI(ttt) {
 		return false;
 	}
 	
+	
+	this.hasTwo = function(x, y, turn) {
+		if((this.state[x][y][0][0] == turn && this.state[x][y][1][0] == turn)
+		  || (this.state[x][y][1][0] == turn && this.state[x][y][2][0] == turn) 
+	      || (this.state[x][y][0][1] == turn && this.state[x][y][1][1] == turn)
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][2][1] == turn) 
+	      || (this.state[x][y][0][2] == turn && this.state[x][y][1][2] == turn)
+		  || (this.state[x][y][1][2] == turn && this.state[x][y][2][2] == turn) 
+	  
+		  || (this.state[x][y][0][0] == turn && this.state[x][y][0][1] == turn)
+		  || (this.state[x][y][0][1] == turn && this.state[x][y][0][2] == turn) 
+		  || (this.state[x][y][1][0] == turn && this.state[x][y][1][1] == turn)
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][1][2] == turn) 
+		  || (this.state[x][y][2][0] == turn && this.state[x][y][2][1] == turn)
+		  || (this.state[x][y][2][1] == turn && this.state[x][y][2][2] == turn) 
+	  
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][0][0] == turn)
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][2][2] == turn) 
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][0][2] == turn)
+		  || (this.state[x][y][1][1] == turn && this.state[x][y][2][0] == turn) ) {
+		  return true;
+		}
+		return false;
+	}
+	
 	this.generateMoves = function() {
 		var next = new Array();
-		if(this.ttt.hasWon(this.mySeed) || this.ttt.hasWon(this.opSeed)) {
+		if(this.ttt.hasWon(this.human) || this.ttt.hasWon(this.computer)) {
 			return [];
 		}
-		var i,j,x,y;
+		var x,y;
 		if(this.ttt.nextBoard == null) { // free to move anywhere, Ignore for now
-			for(i = 0; i < 3; i++) {
-				for(j = 0; j < 3; j++) {
-					for(x = 0; x < 3; x++) {
-						for(y = 0; y < 3; y++) {
-							if(this.ttt.state[i][j][x][y] == 0) {
-								next.push([i,j,x,y]);
-							}
-						}	
-					}
-				}	
-			}
+			next = this.searchAll();
 		} else {
 			for(x = 0; x < 3; x++) {
 				for(y = 0; y < 3; y++) {
-					// alert(this.ttt.state[this.ttt.nextBoard[0]][this.ttt.nextBoard[1]][x][y]);
 					if(this.ttt.state[this.ttt.nextBoard[0]][this.ttt.nextBoard[1]][x][y] == 0) {
 						next.push([this.ttt.nextBoard[0], this.ttt.nextBoard[1],x,y]);
+						// alert([this.ttt.nextBoard[0], this.ttt.nextBoard[1],x,y]);
 					}
 				}	
 			}
+			if(next.length == 0) {
+				next = this.searchAll();
+			}
+		}
+		return next;
+	}
+	
+	this.searchAll = function() {
+		var next = new Array();
+		var i,j,x,y;
+		for(i = 0; i < 3; i++) {
+			for(j = 0; j < 3; j++) {
+				for(x = 0; x < 3; x++) {
+					for(y = 0; y < 3; y++) {
+						if(this.ttt.state[i][j][x][y] == 0) {
+							next.push([i,j,x,y]);
+						}
+					}	
+				}
+			}	
 		}
 		return next;
 	}

@@ -20,6 +20,7 @@
             $(document).ready(function() {
 				ttt = new TicTacToe();
 				ttt.drawBoard();
+				ttt.useAI = false;
             });
         </script>
 
@@ -30,7 +31,7 @@
 		<div id="header">
 			<table>
 				<tr>
-					<td><form><input id="toggle_ai" type="button" onClick="ttt.toggleAI();" value="Human"/></form></td>
+					<!--<td><form><input id="toggle_ai" type="button" onClick="ttt.toggleAI();" value="Human"/></form></td> -->
 					<td><form><input type="button" onClick="history.go(0)" value="New"/></form></td>
 					<td><span id="turn">X</span>'s Turn&nbsp;&nbsp;</td>
 					<td><a href="http://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/" target="_blank">rules</a>&nbsp;&nbsp;</td>
@@ -48,6 +49,10 @@
 		<div id="footer">
 			<div style="float:left;"><a href="http://ken-soft.com/" target="_blank">by: kenny cason 2013</a></div>
 			<div style="float:right"><a href="http://datarank.com/" target="_blank"><img id="logo" src="datarank_logo.png"/></a></div>
+		</div>
+		
+		<div id="data">
+			k
 		</div>
     </body>
 	
@@ -75,7 +80,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        #footer {
+        #footer,#data {
             margin-left: auto;
             margin-right: auto;
             width:500px;
