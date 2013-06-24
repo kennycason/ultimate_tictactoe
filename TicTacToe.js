@@ -331,16 +331,25 @@ function TicTacToe(ai) {
 			}
 		}
 	}
-	
+
+	this.handleClick = function(e) {
+		var offset = $("#board").offset();
+		var x = e.clientX - offset.left + $(window).scrollLeft();
+		var y = e.clientY - offset.top + $(window).scrollTop();
+
+		this.handleInput(x, y);
+	}	
 
 	$("#msg").html("Start by clicking anywhere :)");
-	// handle click events
+
+	// handle click/touch events
 	var board = this;
 	$("#board").click(function(e) {
-		var offset = $("#board").offset();
-		var x = e.clientX - offset.left;
-		var y = e.clientY - offset.top;
-		board.handleInput(x, y);
+		board.handleClick(e);
+	});
+	$("#board").bind("touchstart", function(e) {
+		var targetEvent =  e.touches.item(0);
+		board.handleClick(targetEvent);
 	});
 	
 }
