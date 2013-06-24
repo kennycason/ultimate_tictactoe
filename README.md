@@ -1,6 +1,8 @@
 Ultimate Tic Tac toe
 =================
 
+Play here: http://ken-soft.com/tictactoe/
+
 Rules are very well explained here: http://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/
 
 **Note** I did not expect so many people to actually read the code, I apologize in advance as 
