@@ -8,15 +8,17 @@
 
         <meta name="Author" content="Kenny Cason" />
         <meta name="Copyright" content="Copyright (c) 2013 Ken-Soft" /> 
-	<meta name="viewport" content="width=550,
-				       maximum-scale=1.3" />
+	<meta name="viewport" content="width=550, maximum-scale=1.3" />
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
         <script type="text/javascript" src="Canvas.js"></script>        
-		<script type="text/javascript" src="Util.js"></script>  
-		<script type="text/javascript" src="Pencil.js"></script>  
-		<script type="text/javascript" src="AI.js"></script>  
-		<script type="text/javascript" src="TicTacToe.js"></script>  
+	<script type="text/javascript" src="Util.js"></script>  
+	<script type="text/javascript" src="Pencil.js"></script>  
+	<script type="text/javascript" src="AI.js"></script>  
+	<script type="text/javascript" src="TicTacToe.js"></script>  
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		
         <script type="text/javascript">
 			var ttt;
@@ -46,9 +48,9 @@
 			<table>
 				<tr>
 					<!--<td><form><input id="toggle_ai" type="button" onClick="ttt.toggleAI();" value="Human"/></form></td> -->
-					<td><form><input type="button" onClick="history.go(0)" value="New"/></form></td>
-					<td><div class="fb-like" data-href="http://www.ken-soft.com/tictactoe/" data-send="false" data-layout="button_count" data-width="120" data-show-faces="false"></div></td>
-					<td><span id="turn">X</span>'s Turn&nbsp;&nbsp;</td>
+					<td><form><input type="button" class="btn btn-default" onClick="history.go(0)" value="New" style="width: 100px; height: 30px;" /></form></td>
+					<td>&nbsp;<div class="fb-like" data-href="http://www.ken-soft.com/tictactoe/" data-send="false" data-layout="button_count" data-width="120" data-show-faces="false"></div></td>
+					<td><span id="turn">&nbsp;&nbsp;X</span>'s Turn&nbsp;&nbsp;</td>
 					<td><a href="http://mathwithbaddrawings.com/2013/06/16/ultimate-tic-tac-toe/" target="_blank">rules</a>&nbsp;&nbsp;</td>
 					<td><span id="msg" style="font-size:11px"></span></td>
 				</tr>
